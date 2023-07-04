@@ -1,2 +1,2 @@
-# goxlr-utility-py
-A Python wrapper for the GoXLR Utility API.
+# GoXLR Utility API Python Wrapper
+Documentation coming soon.
