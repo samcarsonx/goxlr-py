@@ -1,0 +1,2 @@
+class DaemonError(Exception):
+    pass
