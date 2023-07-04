@@ -7,6 +7,7 @@ build:
 
 sphinx:
   configuration: docs/conf.py
+  master_doc: README
 
 python:
   install:
