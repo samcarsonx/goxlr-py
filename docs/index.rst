@@ -56,10 +56,6 @@ You may have noticed that we use `with` to manage the connection to the GoXLR. Y
 
     asyncio.run(main())
 
-
-API Reference
--------------
-
 For detailed information on the API, refer to the following section:
 
 .. toctree::
