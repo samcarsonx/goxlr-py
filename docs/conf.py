@@ -24,3 +24,13 @@ autodoc_member_order = "alphabetical"
 
 # HTML theme
 html_theme = "sphinx_rtd_theme"
+
+from myst_parser import parser
+
+source_parsers = {
+    ".md": parser,
+}
+
+source_suffix = [".rst", ".md"]
+
+master_doc = "../README"
