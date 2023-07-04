@@ -1,6 +1,6 @@
 # GoXLR Utility API Python Wrapper
 
- [![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT) [![PyPI version](https://badge.fury.io/py/goxlr.svg)](https://badge.fury.io/py/goxlr) ![PyPI - Downloads](https://img.shields.io/pypi/dm/goxlr) ![GitHub issues](https://img.shields.io/github/issues/samcarsonx/goxlr)
+ [![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT) [![PyPI version](https://badge.fury.io/py/goxlr.svg)](https://badge.fury.io/py/goxlr) ![PyPI - Downloads](https://img.shields.io/pypi/dm/goxlr) ![GitHub issues](https://img.shields.io/github/issues/samcarsonx/goxlr) [![Documentation Status](https://readthedocs.org/projects/goxlr/badge/?version=latest)](https://goxlr.readthedocs.io/en/latest/?badge=latest)
 
 A python wrapper for the API of the open-source GoXLR software alternative, GoXLR Utility, that uses asyncio.
 
@@ -37,8 +37,8 @@ async def main():
     xlr.close()
 ```
 
-## Documentation
-Coming soon. For now, please refer to [goxlr.py](https://github.com/samcarsonx/goxlr/blob/main/goxlr/goxlr.py) to see all of the daemon and GoXLR commands, and refer to [types.py](https://github.com/samcarsonx/goxlr/blob/main/goxlr/types.py) to see all of the enums. You may find it very useful to have an IntelliSense-style plugin in your IDE.
-
 ## Contributing
 Coming soon. As there isn't a CONTRIBUTING.md yet, please try to emulate the style of the rest of the code. Using snake_case and descriptive method argument names with type hints wherever possible.
+
+## Documentation
+Please visit the [documentation](https://goxlr.readthedocs.io/en/latest/) for more information on how to use this package.

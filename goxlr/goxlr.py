@@ -13,6 +13,9 @@ class GoXLR(Socket):
     # General commands
 
     async def ping(self):
+        """
+        Pings the GoXLR Utility daemon
+        """
         return await self.send("Ping")
 
     async def get_status(self):
