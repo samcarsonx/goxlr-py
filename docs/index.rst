@@ -56,22 +56,8 @@ For detailed information on the API, refer to the following section:
 
 .. toctree::
     :maxdepth: 2
-    :caption: API
 
     api/ws
     api/goxlr
-
-.. toctree::
-    :maxdepth: 2
-    :caption: Errors
-
     api/error
-
-.. toctree::
-    :maxdepth: 2
-    :caption: Enumerators
-
     api/types
-
-
-
