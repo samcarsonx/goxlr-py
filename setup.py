@@ -1,8 +1,9 @@
 from setuptools import setup, find_packages
+from version import __version__
 
 setup(
     name="goxlr",
-    version="1.0.4",
+    version=__version__,
     description="A Python wrapper for the GoXLR Utility API.",
     url="https://github.com/samcarsonx/goxlr",
     author="Sam Carson",
