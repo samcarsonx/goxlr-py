@@ -1,2 +1,4 @@
 sphinx-mdinclude
 sphinx-rtd-theme
+websockets
+asyncio
