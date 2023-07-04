@@ -2,6 +2,14 @@
     :start-line: 0
     :end-line: 5
 
+.. toctree::
+    :maxdepth: 2
+    :caption: Useful Links
+
+    GitHub <https://github.com/samcarsonx/goxlr>
+    PyPI <https://pypi.org/project/goxlr>
+    Buy Me a Coffee <https://www.buymeacoffee.com/samcarsonx>
+
 Features
 --------
 
@@ -56,6 +64,7 @@ For detailed information on the API, refer to the following section:
 
 .. toctree::
     :maxdepth: 2
+    :caption: API Reference
 
     api/ws
     api/goxlr
