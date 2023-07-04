@@ -23,3 +23,5 @@ autodoc_member_order = "alphabetical"
 html_theme = "sphinx_rtd_theme"
 
 source_suffix = [".rst", ".md"]
+
+master_doc = "index"
