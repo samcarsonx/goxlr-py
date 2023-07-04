@@ -20,7 +20,6 @@ Here's some sample code to get started with this package that pings the utility'
 ```py
 import asyncio
 from goxlr import GoXLR
-from goxlr.types import ChannelName
 
 async def main():
     async with GoXLR() as xlr:
