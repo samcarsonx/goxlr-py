@@ -14,12 +14,7 @@ version = __version__
 release = __version__
 
 # Extensions
-extensions = [
-    "sphinx.ext.autodoc",
-    "sphinx.ext.napoleon",
-    "myst_parser",
-    "sphinx_mdinclude",
-]
+extensions = ["sphinx.ext.autodoc", "sphinx.ext.napoleon", "sphinx_mdinclude"]
 
 # Autodoc configuration
 autodoc_member_order = "alphabetical"
