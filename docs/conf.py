@@ -12,7 +12,7 @@ author = "Sam Carson"
 # Get year
 copyright = f"{datetime.datetime.now().year}, {author}"
 
-from version import __version__
+from goxlr import __version__
 
 version = __version__
 release = __version__
