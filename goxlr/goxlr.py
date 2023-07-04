@@ -421,7 +421,7 @@ class GoXLR(Socket):
             {"SetRobotWidth": [robot_range.name, robot_width]}
         )
 
-    async def set_robot_waveform(self, robot_waveform: ctypes.uint8):
+    async def set_robot_waveform(self, robot_waveform: ctypes.c_uint8):
         return await self.__send_command({"SetRobotWaveform": robot_waveform})
 
     async def set_robot_pulse_width(self, robot_pulse_width: ctypes.c_uint8):

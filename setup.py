@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="goxlr",
-    version="1.0.1",
+    version="1.0.2",
     description="A Python wrapper for the GoXLR Utility API.",
     url="https://github.com/samcarsonx/goxlr",
     author="Sam Carson",
