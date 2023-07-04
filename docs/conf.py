@@ -14,22 +14,13 @@ version = __version__
 release = __version__
 
 # Extensions
-extensions = [
-    "sphinx.ext.autodoc",
-    "sphinx.ext.napoleon",
-]
+extensions = ["sphinx.ext.autodoc", "sphinx.ext.napoleon", "myst_parser"]
 
 # Autodoc configuration
 autodoc_member_order = "alphabetical"
 
 # HTML theme
 html_theme = "sphinx_rtd_theme"
-
-from myst_parser import parser
-
-source_parsers = {
-    ".md": parser,
-}
 
 source_suffix = [".rst", ".md"]
 
