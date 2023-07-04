@@ -9,6 +9,6 @@ setup(
     author_email="sam@samcarson.co.uk",
     license="None",
     packages=find_packages(),
-    install_requires=[""],
+    install_requires=["asyncio", "websockets", "json", "ctypes", "enum"],
     python_requires=">=3.6",
 )
