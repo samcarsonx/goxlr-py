@@ -14,7 +14,7 @@ Features
 --------
 
 - Asynchronous connection to the GoXLR utility daemon
-- Almost all methods have been translated to Python
+- All methods have been translated to Python
 - Handy enumerators for everything
 - Very simple and easy to get started
 
@@ -33,28 +33,30 @@ Here's some sample code to get started with this package that pings the utility'
 .. code-block:: python
 
     import asyncio
+
     from goxlr import GoXLR
+    from goxlr.types import Fader, Channel
 
     async def main():
         async with GoXLR() as xlr:
-            print(await xlr.ping())
+            await xlr.set_fader(Fader.A, Channel.Headphones)
+            await xlr.set_volume(Channel.Headphones, 0.5)
 
-    asyncio.run(main())
+    if __name__ == "__main__":
+        asyncio.run(main())
 
 You may have noticed that we use `with` to manage the connection to the GoXLR. You may also wish to use the more traditional open and close methods which is acceptable too.
 
 .. code-block:: python
 
-    import asyncio
-    from goxlr import GoXLR
-
     async def main():
         xlr = GoXLR()
-        await xlr.connect()
-        print(await xlr.ping())
-        await xlr.close()
+        await xlr.open()
 
-    asyncio.run(main())
+        ping = await xlr.ping()
+        print(ping)  # Ok
+
+        await xlr.close()
 
 For detailed information on the API, refer to the following section:
 
@@ -62,7 +64,7 @@ For detailed information on the API, refer to the following section:
     :maxdepth: 2
     :caption: API Reference
 
-    api/ws
-    api/goxlr
-    api/error
+    api/socket
+    api/commands
     api/types
+    api/error

@@ -6,7 +6,7 @@ A python wrapper for the API of the open-source GoXLR software alternative, GoXL
 
 ## Features
 - Asynchronous connection to the GoXLR utility daemon
-- Almost all methods have been translated to Python
+- All methods have been translated to Python
 - Handy enumerators for everything
 - Very simple and easy to get started
 
@@ -19,22 +19,29 @@ pip install goxlr
 Here's some sample code to get started with this package that pings the utility's daemon.
 ```py
 import asyncio
+
 from goxlr import GoXLR
+from goxlr.types import Fader, Channel
 
 async def main():
     async with GoXLR() as xlr:
-        print(await xlr.ping())
+        await xlr.set_fader(Fader.A, Channel.Headphones)
+        await xlr.set_volume(Channel.Headphones, 0.5)
 
 if __name__ == "__main__":
     asyncio.run(main())
 ```
+
 You may have noticed that we use `with` to manage the connection to the GoXLR. You may also wish to use the more traditional open and close methods which is acceptable too.
 ```py
 async def main():
     xlr = GoXLR()
-    xlr.connect()
-    print(await xlr.ping())
-    xlr.close()
+    await xlr.open()
+
+    ping = await xlr.ping()
+    print(ping)  # Ok
+
+    await xlr.close()
 ```
 
 ## Contributing

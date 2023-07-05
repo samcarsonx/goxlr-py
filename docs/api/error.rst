@@ -1,5 +1,5 @@
-Errors
-======
+Exceptions
+==========
 
 .. automodule:: goxlr.error
    :members:
