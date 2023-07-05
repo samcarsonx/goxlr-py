@@ -1,10 +1,8 @@
-# connect to ws://localhost:14564/api/websocket
-# make sure to send a heartbeat every 5 seconds
-# make into a class
-
 import asyncio
 import websockets
 import json
+
+from .commands import *
 
 from .error import DaemonError
 
@@ -58,6 +56,9 @@ class Socket:
         response = await self.socket.recv()
         return json.loads(response)
 
+    async def open(self):
+        return await self.connect()
+
     async def close(self):
         await self.socket.close()
         self.heartbeat_task.cancel()
@@ -69,3 +70,13 @@ class Socket:
 
     async def __aexit__(self, exc_type, exc_value, traceback):
         await self.close()
+
+
+class GoXLR(Socket, GeneralCommands, DaemonCommands, GoXLRCommands):
+    """
+    Bundles all functions across all command classes into one class. Inherits from Socket.
+    It is recommended to use this class instead of Socket.
+    """
+
+    def __init__(self, host="localhost", port=14564):
+        super().__init__(host, port)

@@ -1,10 +1,7 @@
-# Based off of this file:
-# https://github.com/GoXLR-on-Linux/goxlr-utility/blob/main/types/src/lib.rs
-
 from enum import Enum
 
 
-class PathTypes(Enum):
+class PathType(Enum):
     Profiles = 1
     MicProfiles = 2
     Presets = 3
@@ -22,7 +19,7 @@ class LogLevel(Enum):
     Trace = 6
 
 
-class ChannelName(Enum):
+class Channel(Enum):
     Mic = 1
     LineIn = 2
     Console = 3
@@ -41,7 +38,7 @@ class Mix(Enum):
     B = 2
 
 
-class SubMixChannelName(Enum):
+class SubMixChannel(Enum):
     Mic = 1
     LineIn = 2
     Console = 3
@@ -52,14 +49,14 @@ class SubMixChannelName(Enum):
     Music = 8
 
 
-class FaderName(Enum):
+class Fader(Enum):
     A = 1
     B = 2
     C = 3
     D = 4
 
 
-class EncoderName(Enum):
+class Encoder(Enum):
     Pitch = 1
     Gender = 2
     Reverb = 3
@@ -271,7 +268,7 @@ class Button(Enum):
     SamplerClear = 24
 
 
-class SimpleColourTargets(Enum):
+class SimpleColourTarget(Enum):
     Global = 1
     Accent = 2
     Scribble1 = 3
@@ -280,20 +277,20 @@ class SimpleColourTargets(Enum):
     Scribble4 = 6
 
 
-class SamplerColourTargets(Enum):
+class SamplerColourTarget(Enum):
     SamplerSelectA = 1
     SamplerSelectB = 2
     SamplerSelectC = 3
 
 
-class EncoderColourTargets(Enum):
+class EncoderColourTarget(Enum):
     Reverb = 1
     Pitch = 2
     Echo = 3
     Gender = 4
 
 
-class ButtonColourGroups(Enum):
+class ButtonColourGroup(Enum):
     FaderMute = 1
     EffectSelector = 2
     EffectTypes = 3
@@ -319,7 +316,7 @@ class MicrophoneType(Enum):
     Jack = 3
 
 
-class EffectBankPresets(Enum):
+class EffectBankPreset(Enum):
     Preset1 = 1
     Preset2 = 2
     Preset3 = 3
@@ -334,7 +331,7 @@ class SampleBank(Enum):
     C = 3
 
 
-class MiniEqFrequencies(Enum):
+class MiniEqFrequency(Enum):
     Equalizer90Hz = 1
     Equalizer250Hz = 2
     Equalizer500Hz = 3
@@ -343,7 +340,7 @@ class MiniEqFrequencies(Enum):
     Equalizer8KHz = 6
 
 
-class EqFrequencies(Enum):
+class EqFrequency(Enum):
     Equalizer31Hz = 1
     Equalizer63Hz = 2
     Equalizer125Hz = 3
@@ -374,7 +371,7 @@ class CompressorRatio(Enum):
     Ratio64_0 = 15
 
 
-class GateTimes(Enum):
+class GateTime(Enum):
     Gate10ms = 1
     Gate20ms = 2
     Gate30ms = 3
@@ -533,7 +530,7 @@ class HardTuneSource(Enum):
     System = 5
 
 
-class SampleButtons(Enum):
+class SampleButton(Enum):
     TopLeft = 1
     TopRight = 2
     BottomLeft = 3
@@ -559,7 +556,7 @@ class DisplayMode(Enum):
     Advanced = 2
 
 
-class DisplayModeComponents(Enum):
+class DisplayModeComponent(Enum):
     NoiseGate = 1
     Equaliser = 2
     Compressor = 3

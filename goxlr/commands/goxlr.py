@@ -1,90 +1,66 @@
 import ctypes
-from .ws import Socket
-from .types import *
-
-# Based off of this file:
-# https://github.com/GoXLR-on-Linux/goxlr-utility/blob/f2a5c1b22080c7cfb2a096efde23913a149b657a/ipc/src/lib.rs
+from ..types import *
 
 
-class GoXLR(Socket):
-    def __init__(self, host="localhost", port=14564):
-        super().__init__(host, port)
-
-    # General commands
-
-    async def ping(self):
-        """
-        Pings the GoXLR Utility daemon
-        """
-        return await self.send("Ping")
-
-    async def get_status(self):
-        return await self.send("GetStatus")
-
-    # Daemon commands
-
-    async def __send_daemon(self, payload):
-        payload = {"Daemon": payload}
-        return await self.send(payload)
-
-    async def open_ui(self):
-        return await self.__send_daemon("OpenUi")
-
-    async def activate(self):
-        return await self.__send_daemon("Activate")
-
-    async def stop_daemon(self):
-        return await self.__send_daemon("StopDaemon")
-
-    async def open_path(self, pathType: PathTypes):
-        return await self.__send_daemon({"OpenPath": pathType.name})
-
-    async def set_log_level(self, logLevel: LogLevel):
-        return await self.__send_daemon({"SetLogLevel": logLevel.name})
-
-    async def set_show_tray_icon(self, enabled: bool):
-        return await self.__send_daemon({"SetShowTrayIcon": enabled})
-
-    async def set_tts_enabled(self, enabled: bool):
-        return await self.__send_daemon({"SetTTSEnabled": enabled})
-
-    async def set_auto_start_enabled(self, enabled: bool):
-        return await self.__send_daemon({"SetAutoStartEnabled": enabled})
-
-    async def set_allow_network_access(self, enabled: bool):
-        return await self.__send_daemon({"SetAllowNetworkAccess": enabled})
-
-    async def recover_defaults(self, pathType: PathTypes):
-        return await self.__send_daemon({"RecoverDefaults": pathType.name})
-
+class GoXLRCommands:
     # GoXLR commands
 
     async def __send_command(self, payload, serial=None):
         payload = {"Command": [serial or self.serial, payload]}
         return await self.send(payload)
 
-    async def set_shutdown_commands(self, *commands):
-        # I'm not sure how this works in the API, so I'm just going to leave it for now
-        # Plus I don't know how I'd make it work with the rest of my wrapper yet
-        pass
+    async def set_shutdown_commands(self, *methods):
+        """
+        Set the commands to be executed when the GoXLR is shutting down.
+        Commands are accepted as a list of lists, where the first item is
+        the method name and the remaining items are the arguments for that
+        method.
+
+        :param methods: A list of methods to be executed when the GoXLR is shutting down.
+        :type methods: list
+        :return: The response from the GoXLR.
+        :rtype: dict or str
+
+        :Example:
+
+        >>> await xlr.set_shutdown_commands(
+        ...     ["SetFader", FaderName.A, ChannelName.Headphones]
+        ... )
+        """
+
+        # Initialize the command dictionary
+        command = {"SetShutdownCommands": []}
+
+        # Iterate over the provided methods
+        for method in methods:
+            if not isinstance(method, list):
+                raise TypeError("Methods must be provided as a list")
+
+            # Extract the method name and arguments
+            method_name, *args = method
+            args = [arg.name if isinstance(arg, Enum) else arg for arg in args]
+
+            # Create a dictionary for the method and arguments
+            method_dict = {method_name: args}
+
+            # Append the method dictionary to the command
+            command["SetShutdownCommands"].append(method_dict)
+
+        return await self.__send_command(command)
 
     async def set_sampler_pre_buffer_duration(self, duration: ctypes.c_uint16):
         return await self.__send_command({"SetSamplerPreBufferDuration": duration})
 
-    async def set_fader(self, fader_name: FaderName, channel_name: ChannelName):
+    async def set_fader(self, fader: Fader, channel: Channel):
+        return await self.__send_command({"SetFader": [fader.name, channel.name]})
+
+    async def set_fader_mute_function(self, fader: Fader, mute_function: MuteFunction):
         return await self.__send_command(
-            {"SetFader": [fader_name.name, channel_name.name]}
+            {"SetFaderMuteFunction": [fader.name, mute_function.name]}
         )
 
-    async def set_fader_mute_function(
-        self, fader_name: FaderName, mute_function: MuteFunction
-    ):
-        return await self.__send_command(
-            {"SetFaderMuteFunction": [fader_name.name, mute_function.name]}
-        )
-
-    async def set_volume(self, channel_name: ChannelName, volume: ctypes.c_uint8):
-        return await self.__send_command({"SetVolume": [channel_name.name, volume]})
+    async def set_volume(self, channel: Channel, volume: ctypes.c_uint8):
+        return await self.__send_command({"SetVolume": [channel.name, volume]})
 
     async def set_microphone_type(self, microphone_type: MicrophoneType):
         return await self.__send_command({"SetMicrophoneType": microphone_type.name})
@@ -116,24 +92,24 @@ class GoXLR(Socket):
 
     # EQ Settings
     async def set_eq_mini_gain(
-        self, mini_eq_frequency: MiniEqFrequencies, gain: ctypes.c_int8
+        self, mini_eq_frequency: MiniEqFrequency, gain: ctypes.c_int8
     ):
         return await self.__send_command(
             {"SetEqMiniGain": [mini_eq_frequency.name, gain]}
         )
 
     async def set_eq_mini_frequency(
-        self, mini_eq_frequency: MiniEqFrequencies, frequency: ctypes.c_float
+        self, mini_eq_frequency: MiniEqFrequency, frequency: ctypes.c_float
     ):
         return await self.__send_command(
             {"SetEqMiniFrequency": [mini_eq_frequency.name, frequency]}
         )
 
-    async def set_eq_gain(self, eq_frequency: EqFrequencies, gain: ctypes.c_int8):
+    async def set_eq_gain(self, eq_frequency: EqFrequency, gain: ctypes.c_int8):
         return await self.__send_command({"SetEqGain": [eq_frequency.name, gain]})
 
     async def set_eq_frequency(
-        self, eq_frequency: EqFrequencies, frequency: ctypes.c_float
+        self, eq_frequency: EqFrequency, frequency: ctypes.c_float
     ):
         return await self.__send_command(
             {"SetEqFrequency": [eq_frequency.name, frequency]}
@@ -146,10 +122,10 @@ class GoXLR(Socket):
     async def set_gate_attenuation(self, gate_attenuation: ctypes.c_uint8):
         return await self.__send_command({"SetGateAttenuation": gate_attenuation})
 
-    async def set_gate_attack(self, gate_attack: GateTimes):
+    async def set_gate_attack(self, gate_attack: GateTime):
         return await self.__send_command({"SetGateAttack": gate_attack.name})
 
-    async def set_gate_release(self, gate_release: GateTimes):
+    async def set_gate_release(self, gate_release: GateTime):
         return await self.__send_command({"SetGateRelease": gate_release.name})
 
     async def set_gate_active(self, gate_active: bool):
@@ -183,10 +159,10 @@ class GoXLR(Socket):
 
     # Used to switch between display modes
     async def set_element_display_mode(
-        self, display_mode_components: DisplayModeComponents, display_mode: DisplayMode
+        self, display_mode_component: DisplayModeComponent, display_mode: DisplayMode
     ):
         return await self.__send_command(
-            {"SetElementDisplayMode": [display_mode_components.name, display_mode.name]}
+            {"SetElementDisplayMode": [display_mode_component.name, display_mode.name]}
         )
 
     # DeEss
@@ -212,17 +188,15 @@ class GoXLR(Socket):
         return await self.__send_command({"SetGlobalColour": colour})
 
     async def set_fader_display_style(
-        self, fader_name: FaderName, fader_display_style: FaderDisplayStyle
+        self, fader: Fader, fader_display_style: FaderDisplayStyle
     ):
         return await self.__send_command(
-            {"SetFaderDisplayStyle": [fader_name.name, fader_display_style.name]}
+            {"SetFaderDisplayStyle": [fader.name, fader_display_style.name]}
         )
 
-    async def set_fader_colours(
-        self, fader_name: FaderName, colour1: str, colour2: str
-    ):
+    async def set_fader_colours(self, fader: Fader, colour1: str, colour2: str):
         return await self.__send_command(
-            {"SetFaderColours": [fader_name.name, colour1, colour2]}
+            {"SetFaderColours": [fader.name, colour1, colour2]}
         )
 
     async def set_all_fader_colours(self, colour1: str, colour2: str):
@@ -234,58 +208,54 @@ class GoXLR(Socket):
         )
 
     async def set_button_colours(
-        self, button_name: Button, colour1: str, colour2: str = None
+        self, button: Button, colour1: str, colour2: str = None
     ):
         return await self.__send_command(
-            {"SetButtonColours": [button_name.name, colour1, colour2]}
+            {"SetButtonColours": [button.name, colour1, colour2]}
         )
 
     async def set_button_off_style(
-        self, button_name: Button, off_style: ButtonColourOffStyle
+        self, button: Button, off_style: ButtonColourOffStyle
     ):
         return await self.__send_command(
-            {"SetButtonOffStyle": [button_name.name, off_style.name]}
+            {"SetButtonOffStyle": [button.name, off_style.name]}
         )
 
     async def set_button_group_colours(
         self,
-        button_colour_groups: ButtonColourGroups,
+        button_colour_group: ButtonColourGroup,
         colour1: str,
         colour2: str = None,
     ):
         return await self.__send_command(
-            {"SetButtonGroupColours": [button_colour_groups.name, colour1, colour2]}
+            {"SetButtonGroupColours": [button_colour_group.name, colour1, colour2]}
         )
 
     async def set_button_group_off_style(
-        self, button_colour_groups: ButtonColourGroups, off_style: ButtonColourOffStyle
+        self, button_colour_group: ButtonColourGroup, off_style: ButtonColourOffStyle
     ):
         return await self.__send_command(
-            {"SetButtonGroupOffStyle": [button_colour_groups.name, off_style.name]}
+            {"SetButtonGroupOffStyle": [button_colour_group.name, off_style.name]}
         )
 
     async def set_simple_colour(
-        self, simple_colour_targets: SimpleColourTargets, colour: str
+        self, simple_colour_target: SimpleColourTarget, colour: str
     ):
         return await self.__send_command(
-            {"SetSimpleColour": [simple_colour_targets.name, colour]}
+            {"SetSimpleColour": [simple_colour_target.name, colour]}
         )
 
-    async def set_encoder_colour(self, encoder_name: EncoderColourTargets, colour: str):
-        return await self.__send_command(
-            {"SetEncoderColour": [encoder_name.name, colour]}
-        )
+    async def set_encoder_colour(self, encoder: EncoderColourTarget, colour: str):
+        return await self.__send_command({"SetEncoderColour": [encoder.name, colour]})
 
-    async def set_sample_colour(self, sample_name: SamplerColourTargets, colour: str):
-        return await self.__send_command(
-            {"SetSampleColour": [sample_name.name, colour]}
-        )
+    async def set_sample_colour(self, sample: SamplerColourTarget, colour: str):
+        return await self.__send_command({"SetSampleColour": [sample.name, colour]})
 
     async def set_sample_off_style(
-        self, sample_name: SamplerColourTargets, off_style: ButtonColourOffStyle
+        self, sample: SamplerColourTarget, off_style: ButtonColourOffStyle
     ):
         return await self.__send_command(
-            {"SetSampleOffStyle": [sample_name.name, off_style.name]}
+            {"SetSampleOffStyle": [sample.name, off_style.name]}
         )
 
     # Effect Related Settings
@@ -459,14 +429,14 @@ class GoXLR(Socket):
     async def set_sampler_function(
         self,
         sample_bank: SampleBank,
-        sample_buttons: SampleButtons,
+        sample_button: SampleButton,
         sample_playback_mode: SamplePlaybackMode,
     ):
         return await self.__send_command(
             {
                 "SetSamplerFunction": [
                     sample_bank.name,
-                    sample_buttons.name,
+                    sample_button.name,
                     sample_playback_mode.name,
                 ]
             }
@@ -475,30 +445,30 @@ class GoXLR(Socket):
     async def set_sampler_order(
         self,
         sample_bank: SampleBank,
-        sample_buttons: SampleButtons,
+        sample_button: SampleButton,
         sample_play_order: SamplePlayOrder,
     ):
         return await self.__send_command(
             {
                 "SetSamplerOrder": [
                     sample_bank.name,
-                    sample_buttons.name,
+                    sample_button.name,
                     sample_play_order.name,
                 ]
             }
         )
 
     async def add_sample(
-        self, sample_bank: SampleBank, sample_buttons: SampleButtons, sample_name: str
+        self, sample_bank: SampleBank, sample_button: SampleButton, sample_name: str
     ):
         return await self.__send_command(
-            {"AddSample": [sample_bank.name, sample_buttons.name, sample_name]}
+            {"AddSample": [sample_bank.name, sample_button.name, sample_name]}
         )
 
     async def set_sample_start_percent(
         self,
         sample_bank: SampleBank,
-        sample_buttons: SampleButtons,
+        sample_button: SampleButton,
         index: int,
         sample_start_percent: ctypes.c_float,
     ):
@@ -506,7 +476,7 @@ class GoXLR(Socket):
             {
                 "SetSampleStartPercent": [
                     sample_bank.name,
-                    sample_buttons.name,
+                    sample_button.name,
                     index,
                     sample_start_percent,
                 ]
@@ -516,7 +486,7 @@ class GoXLR(Socket):
     async def set_sample_stop_percent(
         self,
         sample_bank: SampleBank,
-        sample_buttons: SampleButtons,
+        sample_button: SampleButton,
         index: int,
         sample_stop_percent: ctypes.c_float,
     ):
@@ -524,7 +494,7 @@ class GoXLR(Socket):
             {
                 "SetSampleStopPercent": [
                     sample_bank.name,
-                    sample_buttons.name,
+                    sample_button.name,
                     index,
                     sample_stop_percent,
                 ]
@@ -532,52 +502,52 @@ class GoXLR(Socket):
         )
 
     async def remove_sample_by_index(
-        self, sample_bank: SampleBank, sample_buttons: SampleButtons, index: int
+        self, sample_bank: SampleBank, sample_button: SampleButton, index: int
     ):
         return await self.__send_command(
-            {"RemoveSampleByIndex": [sample_bank.name, sample_buttons.name, index]}
+            {"RemoveSampleByIndex": [sample_bank.name, sample_button.name, index]}
         )
 
     async def play_sample_by_index(
-        self, sample_bank: SampleBank, sample_buttons: SampleButtons, index: int
+        self, sample_bank: SampleBank, sample_button: SampleButton, index: int
     ):
         return await self.__send_command(
-            {"PlaySampleByIndex": [sample_bank.name, sample_buttons.name, index]}
+            {"PlaySampleByIndex": [sample_bank.name, sample_button.name, index]}
         )
 
     async def play_next_sample(
-        self, sample_bank: SampleBank, sample_buttons: SampleButtons
+        self, sample_bank: SampleBank, sample_button: SampleButton
     ):
         return await self.__send_command(
-            {"PlayNextSample": [sample_bank.name, sample_buttons.name]}
+            {"PlayNextSample": [sample_bank.name, sample_button.name]}
         )
 
     async def stop_sample_playback(
-        self, sample_bank: SampleBank, sample_buttons: SampleButtons
+        self, sample_bank: SampleBank, sample_button: SampleButton
     ):
         return await self.__send_command(
-            {"StopSamplePlayback": [sample_bank.name, sample_buttons.name]}
+            {"StopSamplePlayback": [sample_bank.name, sample_button.name]}
         )
 
     # Scribbles
-    async def set_scribble_icon(self, fader_name: FaderName, scribble_icon: str = None):
+    async def set_scribble_icon(self, fader: Fader, scribble_icon: str = None):
         return await self.__send_command(
-            {"SetScribbleIcon": [fader_name.name, scribble_icon]}
+            {"SetScribbleIcon": [fader.name, scribble_icon]}
         )
 
-    async def set_scribble_text(self, fader_name: FaderName, scribble_text: str):
+    async def set_scribble_text(self, fader: Fader, scribble_text: str):
         return await self.__send_command(
-            {"SetScribbleText": [fader_name.name, scribble_text]}
+            {"SetScribbleText": [fader.name, scribble_text]}
         )
 
-    async def set_scribble_number(self, fader_name: FaderName, scribble_number: str):
+    async def set_scribble_number(self, fader: Fader, scribble_number: str):
         return await self.__send_command(
-            {"SetScribbleNumber": [fader_name.name, scribble_number]}
+            {"SetScribbleNumber": [fader.name, scribble_number]}
         )
 
-    async def set_scribble_invert(self, fader_name: FaderName, scribble_invert: bool):
+    async def set_scribble_invert(self, fader: Fader, scribble_invert: bool):
         return await self.__send_command(
-            {"SetScribbleInvert": [fader_name.name, scribble_invert]}
+            {"SetScribbleInvert": [fader.name, scribble_invert]}
         )
 
     # Profile Handling
@@ -624,7 +594,7 @@ class GoXLR(Socket):
         return await self.__send_command({"SetVCMuteAlsoMuteCM": vc_mute_also_mute_cm})
 
     # These control the current GoXLR state
-    async def set_active_effect_preset(self, active_effect_preset: EffectBankPresets):
+    async def set_active_effect_preset(self, active_effect_preset: EffectBankPreset):
         return await self.__send_command(
             {"SetActiveEffectPreset": active_effect_preset.name}
         )
@@ -646,9 +616,9 @@ class GoXLR(Socket):
     async def set_fx_enabled(self, fx_enabled: bool):
         return await self.__send_command({"SetFXEnabled": fx_enabled})
 
-    async def set_fader_mute_state(self, fader_name: FaderName, mute_state: MuteState):
+    async def set_fader_mute_state(self, fader: Fader, mute_state: MuteState):
         return await self.__send_command(
-            {"SetFaderMuteState": [fader_name.name, mute_state.name]}
+            {"SetFaderMuteState": [fader.name, mute_state.name]}
         )
 
     async def set_cough_mute_state(self, mute_state: MuteState):
@@ -658,17 +628,11 @@ class GoXLR(Socket):
     async def set_submix_enabled(self, enabled: bool):
         return await self.__send_command({"SetSubMixEnabled": enabled})
 
-    async def set_submix_volume(
-        self, channel_name: ChannelName, volume: ctypes.c_uint8
-    ):
-        return await self.__send_command(
-            {"SetSubMixVolume": [channel_name.name, volume]}
-        )
+    async def set_submix_volume(self, channel: Channel, volume: ctypes.c_uint8):
+        return await self.__send_command({"SetSubMixVolume": [channel.name, volume]})
 
-    async def set_submix_linked(self, channel_name: ChannelName, linked: bool):
-        return await self.__send_command(
-            {"SetSubMixLinked": [channel_name.name, linked]}
-        )
+    async def set_submix_linked(self, channel: Channel, linked: bool):
+        return await self.__send_command({"SetSubMixLinked": [channel.name, linked]})
 
     async def set_submix_output_mix(self, output_device: OutputDevice, mix: Mix):
         return await self.__send_command(
