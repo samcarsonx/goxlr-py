@@ -688,20 +688,20 @@ class Mixer:
 
 @dataclass
 class Paths:
-    profile_directory: str
-    mic_profile_directory: str
-    samples_directory: str
-    presets_directory: str
-    icons_directory: str
-    logs_directory: str
+    profiles: str
+    mic_profiles: str
+    samples: str
+    presets: str
+    icons: str
+    logs: str
 
     def __init__(self, paths: dict):
-        self.profile_directory = paths.get("profile_directory")
-        self.mic_profile_directory = paths.get("mic_profile_directory")
-        self.samples_directory = paths.get("samples_directory")
-        self.presets_directory = paths.get("presets_directory")
-        self.icons_directory = paths.get("icons_directory")
-        self.logs_directory = paths.get("logs_directory")
+        self.profiles = paths.get("profile_directory")
+        self.mic_profiles = paths.get("mic_profile_directory")
+        self.samples = paths.get("samples_directory")
+        self.presets = paths.get("presets_directory")
+        self.icons = paths.get("icons_directory")
+        self.logs = paths.get("logs_directory")
 
 
 # -------------------------------------------------------
@@ -713,15 +713,15 @@ class Paths:
 class Files:
     profiles: List[str]
     mic_profiles: List[str]
-    presets: List[str]
     samples: Dict[str, str]
+    presets: List[str]
     icons: List[str]
 
     def __init__(self, files: dict):
         self.profiles = files.get("profiles")
         self.mic_profiles = files.get("mic_profiles")
-        self.presets = files.get("presets")
         self.samples = files.get("samples")
+        self.presets = files.get("presets")
         self.icons = files.get("icons")
 
 
