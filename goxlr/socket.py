@@ -1,10 +1,9 @@
 import asyncio
+from typing import List
 import websockets
 import json
 
 from goxlr.types.models import Mixer, Status
-
-from .types import Config
 
 from .commands import DaemonCommands, GoXLRCommands, StatusCommands
 
@@ -193,17 +192,17 @@ class GoXLR(Socket, DaemonCommands, GoXLRCommands, StatusCommands):
         """
 
         # set self.serial to serial if specified. if None, default to first mixer
-        if not self.mixers:
+        if not self.status.mixers:
             raise DaemonError("No mixers found.")
 
         if serial:
-            if serial not in self.mixers:
+            if serial not in self.status.mixers:
                 raise MixerNotFoundError(f"Mixer with serial {serial} not found")
         else:
-            serial = next(iter(self.mixers))
+            serial = next(iter(self.status.mixers))
 
         self.serial = serial
-        self.mixer = Mixer(self.mixers.get(self.serial))
+        self.mixer = self.status.mixers.get(self.serial)
 
         return self.mixer
 
