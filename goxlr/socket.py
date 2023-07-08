@@ -85,12 +85,14 @@ class Socket:
         If no ID is specified, it will wait for the first response and will
         not add it to the queue.
 
-        To specifically wait for a heartbeat response, specify an ID of 0.
-        To specifically wait for a patch response, specify an ID of 2**64 - 1.
+        To wait for a heartbeat response, specify an ID of 0.
+        To wait for a patch response, specify an ID of 2**64 - 1.
 
         :param id: The ID of the response to wait for.
 
         :return: The response from the daemon.
+
+        :raises: `DaemonError` if the daemon returns an error.
         """
         if not id:
             response = await self.socket.recv()
@@ -169,10 +171,17 @@ class GoXLR(Socket, DaemonCommands, GoXLRCommands, StatusCommands):
 
     async def update(self):
         """
-        Gets the latest data from the GoXLR Utility daemon and
-        updates the status and mixers attributes.
+        Gets the latest data from the GoXLR Utility daemon and updates the status
+        and mixers attributes.
 
         :return: The status of the daemon.
+
+        :raises DaemonError: If the daemon is not running.
+        :raises MixerNotFoundError: If the specified mixer is not found.
+
+        :note: This method is automatically called when the class is instantiated.
+        You should manually call this method periodically to ensure that the data
+        is up to date.
         """
         self.status = await self.get_status()
 
@@ -189,6 +198,9 @@ class GoXLR(Socket, DaemonCommands, GoXLRCommands, StatusCommands):
                        If not specified, it will default to the first mixer.
 
         :return: The selected mixer.
+
+        :raises DaemonError: If no mixers are found.
+        :raises MixerNotFoundError: If the specified mixer is not found.
         """
 
         # set self.serial to serial if specified. if None, default to first mixer
@@ -209,6 +221,10 @@ class GoXLR(Socket, DaemonCommands, GoXLRCommands, StatusCommands):
     async def connect(self):
         """
         Connects to the GoXLR Utility daemon and gets the latest data.
+
+        :return: True if the connection was successful, False otherwise.
+
+        :raises DaemonError: If no mixers are found.
         """
         connected = await super().connect()
         if connected:

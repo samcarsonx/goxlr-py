@@ -14,11 +14,13 @@ class StatusCommands:
 
     async def get_status(self) -> Status:
         """
-        Returns the status of the GoXLR. `GoXLR.update()` should be used instead.
+        Returns the status of the GoXLR.
 
         :return: The status of the GoXLR.
 
         :raises DaemonError: If the status could not be retrieved.
+
+        :note: You should use GoXLR.update() instead of this method.
         """
         status = await self.send("GetStatus")
 

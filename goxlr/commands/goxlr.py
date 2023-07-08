@@ -9,7 +9,7 @@ class GoXLRCommands:
         payload = {"Command": [serial or self.serial, payload]}
         return await self.send(payload)
 
-    async def set_shutdown_commands(self, *methods):
+    async def set_shutdown_commands(self, *methods) -> dict | str:
         """
         Set the commands to be executed when the GoXLR is shutting down.
         Commands are accepted as a list of lists, where the first item is
@@ -19,12 +19,12 @@ class GoXLRCommands:
         :param methods: A list of methods to be executed when the GoXLR is shutting down.
         :type methods: list
         :return: The response from the GoXLR.
-        :rtype: dict or str
 
         :Example:
 
         >>> await xlr.set_shutdown_commands(
-        ...     ["SetFader", FaderName.A, ChannelName.Headphones]
+        ...     ["SetFader", Fader.A, Channel.Headphones],
+        ...     ["SetFader", Fader.B, Channel.Chat]
         ... )
         """
 
