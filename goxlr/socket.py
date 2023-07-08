@@ -2,7 +2,7 @@ import asyncio
 import websockets
 import json
 
-from goxlr.types.models import Mixer
+from goxlr.types.models import Mixer, Status
 
 from .types import Config
 
@@ -153,18 +153,18 @@ class GoXLR(Socket, DaemonCommands, GoXLRCommands, StatusCommands):
     def __init__(self, host="localhost", port=14564, serial=None):
         super().__init__(host, port)
 
-        self.status: dict = None
-        self.config: Config = None
-        self.mixers: dict = None
-        self.paths: dict = None
-        self.files: dict = None
+        self.status: Status = None
 
-        self.serial: str = serial
-        self.mixer: Mixer = None
+        self.mixer: Mixer = None  # the currently selected mixer
+        self.serial: str = (
+            serial  # shorthand for self.mixer.hardware_info.serial_number
+        )
 
     async def ping(self):
         """
-        Pings the GoXLR Utility daemon
+        Pings the GoXLR Utility daemon.
+
+        :return: "Ok" if the daemon is running.
         """
         return await self.send("Ping")
 
@@ -172,16 +172,10 @@ class GoXLR(Socket, DaemonCommands, GoXLRCommands, StatusCommands):
         """
         Gets the latest data from the GoXLR Utility daemon and
         updates the status and mixers attributes.
+
+        :return: The status of the daemon.
         """
         self.status = await self.get_status()
-
-        if not self.status:
-            raise DaemonError("Failed to retrieve status.")
-
-        self.config = Config(self.status.get("config"))
-        self.mixers = self.status.get("mixers")
-        self.paths = self.status.get("paths")
-        self.files = self.status.get("files")
 
         if self.serial:
             self.mixer = self.select_mixer(self.serial)

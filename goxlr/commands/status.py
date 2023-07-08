@@ -1,5 +1,5 @@
 from ..error import DaemonError, MixerNotFoundError
-from ..types.models import HttpSettings, LogLevel, Mixer, PathType
+from ..types.models import HttpSettings, LogLevel, Mixer, PathType, Status
 
 
 class StatusCommands:
@@ -9,37 +9,42 @@ class StatusCommands:
     already enough code in goxlr.py.
     """
 
-    async def get_status(self):
+    def __init__(self):
+        self.status: Status = None
+
+    async def get_status(self) -> Status:
         """
         Returns the status of the GoXLR. `GoXLR.update()` should be used instead.
+
+        :return: The status of the GoXLR.
         """
         status = await self.send("GetStatus")
 
         if not status:
             raise DaemonError("Failed to get status from daemon.")
 
-        return status
+        return Status(status)
 
     def get_http_settings(self) -> HttpSettings:
-        return self.config.http_settings
+        return self.status.config.http_settings
 
     def get_daemon_version(self) -> str:
-        return self.config.get("daemon_version")
+        return self.status.config.daemon_version
 
     def is_autostart_enabled(self) -> bool:
-        return self.config.get("autostart_enabled")
+        return self.status.config.autostart_enabled
 
     def is_tray_icon_visible(self) -> bool:
-        return self.config.get("show_tray_icon")
+        return self.status.config.show_tray_icon
 
     def is_tts_enabled(self) -> bool:
-        return self.config.get("tts_enabled")
+        return self.status.config.tts_enabled
 
     def is_network_access_allowed(self) -> bool:
-        return self.config.get("allow_network_access")
+        return self.status.config.allow_network_access
 
     def get_log_level(self) -> LogLevel:
-        return LogLevel[self.config.get("log_level")]
+        return self.status.config.log_level
 
     def get_mixer(self, serial: str = None) -> Mixer:
         if not serial:

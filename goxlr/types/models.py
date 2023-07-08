@@ -723,3 +723,24 @@ class Files:
         self.presets = files.get("presets")
         self.samples = files.get("samples")
         self.icons = files.get("icons")
+
+
+# -------------------------------------------------------
+# Status
+# -------------------------------------------------------
+
+
+@dataclass
+class Status:
+    config: Config
+    mixers: Dict[str, Mixer]
+    paths: Paths
+    files: Files
+
+    def __init__(self, status: dict):
+        self.config = Config(status.get("config"))
+        self.mixers = {
+            serial: Mixer(mixer) for serial, mixer in status.get("mixers").items()
+        }
+        self.paths = Paths(status.get("paths"))
+        self.files = Files(status.get("files"))
