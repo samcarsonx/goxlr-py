@@ -1,5 +1,7 @@
 from enum import Enum
 
+# Enumerators used by the GoXLR Utility Daemon. (with slight name changes)
+
 
 class PathType(Enum):
     Profiles = 1
@@ -575,7 +577,7 @@ class AnimationMode(Enum):
     RainbowBright = 3
     Simple = 4
     Ripple = 5
-    NoMode = 6  # Should be 'None' but that's a reserved word in Python
+    NONE = 6
 
 
 class WaterfallDirection(Enum):

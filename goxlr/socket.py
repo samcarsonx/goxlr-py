@@ -1,14 +1,27 @@
 import asyncio
-import time
 import websockets
 import json
 
-from .commands import *
+from goxlr.types.models import Mixer
 
-from .error import DaemonError
+from .types import Config
+
+from .commands import DaemonCommands, GoXLRCommands, StatusCommands
+
+from .error import DaemonError, MixerNotFoundError
 
 
 class Socket:
+    """
+    A class for handling the websocket connection to the daemon.
+    It also handles the heartbeat task and the response queue. The response
+    queue is used to ensure that the correct response is returned for a
+    specific request.
+
+    :param host: The host/IP address of the daemon.
+    :param port: The port of the daemon.
+    """
+
     def __init__(self, host, port):
         self.host = host
         self.port = port
@@ -18,7 +31,6 @@ class Socket:
         self.heartbeat_task = None
         self.heartbeat_payload = {"id": 0, "data": "Ping"}
         self.response_queue = []
-        self.serial = None
 
     async def connect(self):
         """
@@ -28,15 +40,6 @@ class Socket:
         """
         self.socket = await websockets.connect(self.uri)
         self.heartbeat_task = asyncio.create_task(self.__send_heartbeat())
-
-        status = await self.send("GetStatus")
-        mixers = status.get("mixers")
-        if mixers:
-            # get first key, why would there be more than one?
-            self.serial = next(iter(mixers))
-        else:
-            raise DaemonError("No mixers found")
-
         return self.socket.open
 
     async def __send_heartbeat(self):
@@ -142,11 +145,81 @@ class Socket:
         await self.close()
 
 
-class GoXLR(Socket, GeneralCommands, DaemonCommands, GoXLRCommands):
+class GoXLR(Socket, DaemonCommands, GoXLRCommands, StatusCommands):
     """
-    Bundles all functions across all command classes into one class. Inherits from Socket.
-    It is recommended to use this class instead of Socket.
+    A class for interacting with the GoXLR Utility daemon.
     """
 
-    def __init__(self, host="localhost", port=14564):
+    def __init__(self, host="localhost", port=14564, serial=None):
         super().__init__(host, port)
+
+        self.status: dict = None
+        self.config: Config = None
+        self.mixers: dict = None
+        self.paths: dict = None
+        self.files: dict = None
+
+        self.serial: str = serial
+        self.mixer: Mixer = None
+
+    async def ping(self):
+        """
+        Pings the GoXLR Utility daemon
+        """
+        return await self.send("Ping")
+
+    async def update(self):
+        """
+        Gets the latest data from the GoXLR Utility daemon and
+        updates the status and mixers attributes.
+        """
+        self.status = await self.get_status()
+
+        if not self.status:
+            raise DaemonError("Failed to retrieve status.")
+
+        self.config = Config(self.status.get("config"))
+        self.mixers = self.status.get("mixers")
+        self.paths = self.status.get("paths")
+        self.files = self.status.get("files")
+
+        if self.serial:
+            self.mixer = self.select_mixer(self.serial)
+
+        return self.status
+
+    def select_mixer(self, serial: str = None):
+        """
+        Chooses a mixer to interact with.
+
+        :param serial: The serial number of the mixer to interact with.
+                       If not specified, it will default to the first mixer.
+
+        :return: The selected mixer.
+        """
+
+        # set self.serial to serial if specified. if None, default to first mixer
+        if not self.mixers:
+            raise DaemonError("No mixers found.")
+
+        if serial:
+            if serial not in self.mixers:
+                raise MixerNotFoundError(f"Mixer with serial {serial} not found")
+        else:
+            serial = next(iter(self.mixers))
+
+        self.serial = serial
+        self.mixer = Mixer(self.mixers.get(self.serial))
+
+        return self.mixer
+
+    async def connect(self):
+        """
+        Connects to the GoXLR Utility daemon and gets the latest data.
+        """
+        connected = await super().connect()
+        if connected:
+            await self.update()
+            self.select_mixer()  # select the first mixer by default
+
+        return connected

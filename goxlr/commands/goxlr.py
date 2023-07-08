@@ -1,5 +1,5 @@
 import ctypes
-from ..types import *
+from ..types.enums import *
 
 
 class GoXLRCommands:
@@ -171,7 +171,13 @@ class GoXLRCommands:
 
     # Colour Related Settings
     async def set_animation_mode(self, animation_mode: AnimationMode):
-        return await self.__send_command({"SetAnimationMode": animation_mode.name})
+        return await self.__send_command(
+            {
+                "SetAnimationMode": "None"
+                if animation_mode is AnimationMode.NONE
+                else animation_mode.name
+            }
+        )
 
     async def set_animation_mod1(self, animation_mod1: ctypes.c_uint8):
         return await self.__send_command({"SetAnimationMod1": animation_mod1})
