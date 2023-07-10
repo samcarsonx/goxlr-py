@@ -82,7 +82,7 @@ class HardwareInfo:
     versions: MixerVersions
     serial_number: str
     manufactured_date: datetime
-    device_type: str
+    device_type: DeviceType
     usb_device: USBDevice
 
     def __init__(self, hardware_info: dict):

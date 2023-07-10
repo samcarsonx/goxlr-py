@@ -584,3 +584,9 @@ class WaterfallDirection(Enum):
     Down = 1
     Up = 2
     Off = 3
+
+
+class DeviceType(Enum):
+    Unknown = 1
+    Full = 2
+    Mini = 3
