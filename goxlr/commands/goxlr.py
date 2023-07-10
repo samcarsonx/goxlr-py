@@ -1,4 +1,6 @@
 import ctypes
+
+from ..types.models import Colours
 from ..types.enums import *
 
 
@@ -251,11 +253,21 @@ class GoXLRCommands:
             {"SetSimpleColour": [simple_colour_target.name, colour]}
         )
 
-    async def set_encoder_colour(self, encoder: EncoderColourTarget, colour: str):
-        return await self.__send_command({"SetEncoderColour": [encoder.name, colour]})
+    async def set_encoder_colours(self, encoder: EncoderColourTarget, colours: Colours):
+        colour1 = colours.colour_one
+        colour2 = colours.colour_two
+        colour3 = colours.colour_three
+        return await self.__send_command(
+            {"SetEncoderColour": [encoder.name, colour1, colour2, colour3]}
+        )
 
-    async def set_sample_colour(self, sample: SamplerColourTarget, colour: str):
-        return await self.__send_command({"SetSampleColour": [sample.name, colour]})
+    async def set_sample_colours(self, sample: SamplerColourTarget, colours: Colours):
+        colour1 = colours.colour_one
+        colour2 = colours.colour_two
+        colour3 = colours.colour_three
+        return await self.__send_command(
+            {"SetSampleColour": [sample.name, colour1, colour2, colour3]}
+        )
 
     async def set_sample_off_style(
         self, sample: SamplerColourTarget, off_style: ButtonColourOffStyle

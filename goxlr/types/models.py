@@ -319,10 +319,15 @@ class Colours:
     colour_two: Optional[str]
     colour_three: Optional[str]
 
-    def __init__(self, colours: dict):
-        self.colour_one = colours.get("colour_one")
-        self.colour_two = colours.get("colour_two")
-        self.colour_three = colours.get("colour_three")
+    def __init__(self, colours: dict = None, *args):
+        if type(colours) != dict:
+            self.colour_one = colours
+            self.colour_two = args[0] if len(args) > 0 else None
+            self.colour_three = args[1] if len(args) > 1 else None
+        else:
+            self.colour_one = colours.get("colour_one")
+            self.colour_two = colours.get("colour_two")
+            self.colour_three = colours.get("colour_three")
 
 
 @dataclass
