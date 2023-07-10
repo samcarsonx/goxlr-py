@@ -180,8 +180,8 @@ class GoXLR(Socket, DaemonCommands, GoXLRCommands, StatusCommands):
         :raises MixerNotFoundError: If the specified mixer is not found.
 
         :note: This method is automatically called when the class is instantiated.
-        You should manually call this method periodically to ensure that the data
-        is up to date.
+            You should manually call this method periodically to ensure that the data
+            is up to date.
         """
         self.status = await self.get_status()
 
