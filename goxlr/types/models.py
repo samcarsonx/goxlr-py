@@ -274,12 +274,12 @@ class Levels:
 class CoughButton:
     is_toggle: bool
     mute_type: MuteFunction
-    mute_state: MuteState
+    state: MuteState
 
     def __init__(self, cough_button: dict):
         self.is_toggle = cough_button.get("is_toggle")
         self.mute_type = MuteFunction[cough_button.get("mute_type")]
-        self.mute_state = MuteState[cough_button.get("mute_state")]
+        self.mute_state = MuteState[cough_button.get("state")]
 
 
 # --------------------------------------------------
@@ -684,6 +684,7 @@ class Mixer:
             InputDevice[k]: {OutputDevice[k]: v for k, v in v.items()}
             for k, v in mixer.get("router").items()
         }
+        self.cough_button = CoughButton(mixer.get("cough_button"))
         self.lighting = Lighting(mixer.get("lighting"))
         self.effects = Effects(mixer.get("effects"))
         self.sampler = Sampler(mixer.get("sampler"))
