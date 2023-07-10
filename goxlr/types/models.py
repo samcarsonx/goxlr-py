@@ -646,13 +646,14 @@ class MixerSettings:
 
 @dataclass
 class Mixer:
-    hardware_info: HardwareInfo
+    hardware: HardwareInfo
     serial: str  # shortcut for hardware_info.serial_number
     shutdown_commands: List[Dict[str, List[str] | str]]
     fader_status: Dict[Fader, FaderStatus]
     mic_status: MicStatus
     levels: Levels
     router: Router
+    cough_button: CoughButton
     lighting: Lighting
     effects: Effects
     sampler: Sampler
