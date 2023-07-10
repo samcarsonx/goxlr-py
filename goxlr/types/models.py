@@ -315,19 +315,25 @@ class Animation:
 
 @dataclass
 class Colours:
+    """
+    Store up to three colours for a lighting style.
+
+    Can be initialised with a dict or up to three strings.
+    """
+
     colour_one: str
     colour_two: Optional[str]
     colour_three: Optional[str]
 
-    def __init__(self, colours: dict = None, *args):
-        if type(colours) != dict:
-            self.colour_one = colours
-            self.colour_two = args[0] if len(args) > 0 else None
-            self.colour_three = args[1] if len(args) > 1 else None
+    def __init__(self, colour1: dict | str, colour2: str = None, colour3: str = None):
+        if type(colour1) == str:
+            self.colour_one = colour1
+            self.colour_two = colour2
+            self.colour_three = colour3
         else:
-            self.colour_one = colours.get("colour_one")
-            self.colour_two = colours.get("colour_two")
-            self.colour_three = colours.get("colour_three")
+            self.colour_one = colour1.get("colour_one")
+            self.colour_two = colour1.get("colour_two")
+            self.colour_three = colour1.get("colour_three")
 
 
 @dataclass
