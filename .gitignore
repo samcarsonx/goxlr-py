@@ -1,5 +1,6 @@
 scripts/
 /main.py
+/a.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
