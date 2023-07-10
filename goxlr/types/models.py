@@ -236,8 +236,12 @@ class Submixes:
     outputs: Dict[OutputDevice, Mix]
 
     def __init__(self, submixes: dict):
-        self.inputs = {SubMixChannel[k]: v for k, v in submixes.get("inputs").items()}
-        self.outputs = {OutputDevice[k]: v for k, v in submixes.get("outputs").items()}
+        self.inputs = {
+            SubMixChannel[k]: Submix(v) for k, v in submixes.get("inputs").items()
+        }
+        self.outputs = {
+            OutputDevice[k]: Mix[v] for k, v in submixes.get("outputs").items()
+        }
 
 
 @dataclass
