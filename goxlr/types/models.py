@@ -588,7 +588,7 @@ class Sample:
 
 
 @dataclass
-class SampleButton:
+class SampleButtonMetadata:
     function: SamplePlaybackMode
     order: SamplePlayOrder
     samples: List[Sample]
@@ -619,7 +619,7 @@ class Sampler:
     active_bank: SampleBank
     clear_active: bool
     record_buffer: int
-    banks: Dict[SampleBank, Dict[SampleButton, Sample]]
+    banks: Dict[SampleBank, Dict[SampleButton, SampleButtonMetadata]]
 
     def __init__(self, sampler: dict):
         self.processing_state = SamplerProcessState(sampler.get("processing_state"))
