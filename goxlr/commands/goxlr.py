@@ -89,7 +89,7 @@ class GoXLRCommands:
         return await self.__send_command({"SetCoughIsHold": is_hold})
 
     # Bleep Button
-    async def set_swear_button_volume(self, volume: ctypes.c_int8):
+    async def set_bleep_volume(self, volume: ctypes.c_int8):
         return await self.__send_command({"SetSwearButtonVolume": volume})
 
     # EQ Settings
@@ -168,7 +168,7 @@ class GoXLRCommands:
         )
 
     # DeEss
-    async def set_deeser(self, deesser: ctypes.c_uint8):
+    async def set_deesser(self, deesser: ctypes.c_uint8):
         return await self.__send_command({"SetDeesser": deesser})
 
     # Colour Related Settings
@@ -617,7 +617,7 @@ class GoXLRCommands:
             {"SetActiveEffectPreset": active_effect_preset.name}
         )
 
-    async def set_active_sampler_bank(self, active_sampler_bank: SampleBank):
+    async def set_sampler_active_bank(self, active_sampler_bank: SampleBank):
         return await self.__send_command(
             {"SetActiveSamplerBank": active_sampler_bank.name}
         )
