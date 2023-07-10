@@ -1,6 +1,12 @@
 name: Publish Python distributions to PyPI
 
 on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: 'Tag name'
+        required: true
+        default: 'v0.0.0'
   push:
     tags:
       - '*'
@@ -21,7 +27,7 @@ jobs:
 
       - name: Extract tag name
         id: tag
-        run: echo ::set-output name=TAG_NAME::${GITHUB_REF#refs/tags/v}
+        run: echo ::set-output name=TAG_NAME::${ github.event.inputs.release_tag || (GITHUB_REF#refs/tags/v) }
 
       - name: Update version in _version.py
         run: sed -i "s/{{VERSION_PLACEHOLDER}}/${{ steps.tag.outputs.TAG_NAME }}/g" goxlr/_version.py
