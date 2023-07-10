@@ -240,22 +240,6 @@ class Levels:
 
 
 # --------------------------------------------------
-# Mixer - Router
-# --------------------------------------------------
-
-
-@dataclass
-class Router:
-    routing: Dict[InputDevice, Dict[OutputDevice, bool]]
-
-    def __init__(self, router: dict):
-        self.routing = {
-            InputDevice[k]: {OutputDevice[k]: v for k, v in v.items()}
-            for k, v in router.items()
-        }
-
-
-# --------------------------------------------------
 # Mixer - Cough Button
 # --------------------------------------------------
 
@@ -647,12 +631,11 @@ class MixerSettings:
 @dataclass
 class Mixer:
     hardware: HardwareInfo
-    serial: str  # shortcut for hardware_info.serial_number
     shutdown_commands: List[Dict[str, List[str] | str]]
     fader_status: Dict[Fader, FaderStatus]
     mic_status: MicStatus
     levels: Levels
-    router: Router
+    router: Dict[InputDevice, Dict[OutputDevice, bool]]
     cough_button: CoughButton
     lighting: Lighting
     effects: Effects
@@ -663,8 +646,7 @@ class Mixer:
     mic_profile_name: str
 
     def __init__(self, mixer: dict):
-        self.hardware_info = HardwareInfo(mixer.get("hardware"))
-        self.serial = self.hardware_info.serial_number
+        self.hardware = HardwareInfo(mixer.get("hardware"))
         self.shutdown_commands = mixer.get("shutdown_commands")
         self.fader_status = {
             Fader[fader]: FaderStatus(status)
@@ -672,7 +654,10 @@ class Mixer:
         }
         self.mic_status = MicStatus(mixer.get("mic_status"))
         self.levels = Levels(mixer.get("levels"))
-        self.router = Router(mixer.get("router"))
+        self.router = {
+            InputDevice[k]: {OutputDevice[k]: v for k, v in v.items()}
+            for k, v in mixer.get("router").items()
+        }
         self.lighting = Lighting(mixer.get("lighting"))
         self.effects = Effects(mixer.get("effects"))
         self.sampler = Sampler(mixer.get("sampler"))
