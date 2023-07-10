@@ -646,10 +646,10 @@ class GoXLRCommands:
     async def set_submix_enabled(self, enabled: bool):
         return await self.__send_command({"SetSubMixEnabled": enabled})
 
-    async def set_submix_volume(self, channel: Channel, volume: ctypes.c_uint8):
+    async def set_submix_volume(self, channel: SubMixChannel, volume: ctypes.c_uint8):
         return await self.__send_command({"SetSubMixVolume": [channel.name, volume]})
 
-    async def set_submix_linked(self, channel: Channel, linked: bool):
+    async def set_submix_linked(self, channel: SubMixChannel, linked: bool):
         return await self.__send_command({"SetSubMixLinked": [channel.name, linked]})
 
     async def set_submix_output_mix(self, output_device: OutputDevice, mix: Mix):
