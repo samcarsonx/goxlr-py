@@ -22,6 +22,7 @@ extensions = ["sphinx.ext.autodoc", "sphinx.ext.napoleon", "sphinx_mdinclude"]
 
 # Autodoc configuration
 autodoc_member_order = "bysource"
+autodoc_typehints = "description"
 
 # HTML theme
 html_theme = "sphinx_rtd_theme"
