@@ -221,12 +221,12 @@ class MicStatus:
 @dataclass
 class Submix:
     volume: int
-    enabled: bool
+    linked: bool
     ratio: float
 
     def __init__(self, submix: dict):
         self.volume = submix.get("volume")
-        self.enabled = submix.get("enabled")
+        self.linked = submix.get("linked")
         self.ratio = submix.get("ratio")
 
 
