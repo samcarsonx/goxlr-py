@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from datetime import datetime
 from typing import Dict, List, Optional
 from .enums import *
 
@@ -80,14 +81,16 @@ class USBDevice:
 class HardwareInfo:
     versions: MixerVersions
     serial_number: str
-    manufactured_date: str
+    manufactured_date: datetime
     device_type: str
     usb_device: USBDevice
 
     def __init__(self, hardware_info: dict):
         self.versions = MixerVersions(hardware_info.get("versions"))
         self.serial_number = hardware_info.get("serial_number")
-        self.manufactured_date = hardware_info.get("manufactured_date")
+        self.manufactured_date = datetime.strptime(
+            hardware_info.get("manufactured_date"), "%Y-%m-%d"
+        )
         self.device_type = hardware_info.get("device_type")
         self.usb_device = USBDevice(hardware_info.get("usb_device"))
 
