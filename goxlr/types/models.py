@@ -219,11 +219,33 @@ class MicStatus:
 
 
 @dataclass
+class Submix:
+    volume: int
+    enabled: bool
+    ratio: float
+
+    def __init__(self, submix: dict):
+        self.volume = submix.get("volume")
+        self.enabled = submix.get("enabled")
+        self.ratio = submix.get("ratio")
+
+
+@dataclass
+class Submixes:
+    inputs: Dict[SubMixChannel, Submix]
+    outputs: Dict[OutputDevice, Mix]
+
+    def __init__(self, submixes: dict):
+        self.inputs = {SubMixChannel[k]: v for k, v in submixes.get("inputs").items()}
+        self.outputs = {OutputDevice[k]: v for k, v in submixes.get("outputs").items()}
+
+
+@dataclass
 class Levels:
     submix_supported: bool
     output_monitor: OutputDevice
     volumes: Dict[Channel, int]
-    submix: Optional[Dict[Channel, int]]
+    submix: Optional[Submixes]
     bleep: int
     deess: int
 
