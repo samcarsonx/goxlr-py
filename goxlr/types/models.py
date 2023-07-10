@@ -315,9 +315,9 @@ class Animation:
 
 @dataclass
 class Colours:
-    colour_one: int
-    colour_two: Optional[int]
-    colour_three: Optional[int]
+    colour_one: str
+    colour_two: Optional[str]
+    colour_three: Optional[str]
 
     def __init__(self, colours: dict):
         self.colour_one = colours.get("colour_one")
