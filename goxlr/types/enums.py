@@ -595,3 +595,12 @@ class DeviceType(Enum):
 class IDType(Enum):
     Heartbeat: int = 0
     Patch: int = 2**64 - 1
+
+
+class PatchOperation(Enum):
+    Add = 1
+    Remove = 2
+    Replace = 3
+    Copy = 4
+    Move = 5
+    Test = 6

@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 from .enums import *
 
 # --------------------------------------------------
@@ -771,3 +771,20 @@ class Status:
         }
         self.paths = Paths(status.get("paths"))
         self.files = Files(status.get("files"))
+
+
+# -------------------------------------------------------
+# Patch
+# -------------------------------------------------------
+
+
+@dataclass
+class Patch:
+    operation: PatchOperation
+    path: str
+    value: Any
+
+    def __init__(self, patch: dict):
+        self.operation = PatchOperation[patch.get("op").title()]
+        self.path = patch.get("path")
+        self.value = patch.get("value")
