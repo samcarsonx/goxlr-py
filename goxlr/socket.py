@@ -209,7 +209,7 @@ class GoXLR(Socket, DaemonCommands, GoXLRCommands, StatusCommands):
         :return: The patch from the daemon.
         """
 
-        patches = await self.receive_patch()
+        patches = await Socket.receive_patch(self)
 
         if update:
             await self.update()
