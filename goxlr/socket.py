@@ -118,6 +118,15 @@ class Socket:
                     continue
                 self.response_queue.append(response)
 
+    async def receive_patch(self):
+        """
+        Helper method to wait for a patch message from the daemon.
+
+        :return: The patch from the daemon.
+        """
+        response = await self.receive(IDType.Patch)
+        return response.get("data").get("Patch")
+
     async def open(self):
         """
         Alias for `connect()`.
@@ -230,12 +239,3 @@ class GoXLR(Socket, DaemonCommands, GoXLRCommands, StatusCommands):
             self.select_mixer()  # select the first mixer by default
 
         return connected
-
-    async def receive_patch(self):
-        """
-        Helper method to wait for a patch message from the daemon.
-
-        :return: The patch from the daemon.
-        """
-        response = await self.receive(IDType.Patch)
-        return response.get("data").get("Patch")
