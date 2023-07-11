@@ -3,7 +3,7 @@ from typing import List
 import websockets
 import json
 
-from goxlr.types.models import Mixer, Status
+from .types.models import Mixer, Status, IDType
 
 from .commands import DaemonCommands, GoXLRCommands, StatusCommands
 
@@ -76,19 +76,15 @@ class Socket:
             elif error := data.get("Error"):
                 raise DaemonError(error)
 
-    async def receive(self, id=None):
+    async def receive(self, id: IDType | int = None):
         """
         Waits for a response from the daemon. If an ID is specified, it will
         wait until it receives a response with the same ID and queue all other
         responses.
 
-        If no ID is specified, it will wait for the first response and will
-        not add it to the queue.
-
-        To wait for a heartbeat response, specify an ID of 0.
-        To wait for a patch response, specify an ID of 2**64 - 1.
-
-        :param id: The ID of the response to wait for.
+        :param id: The ID of the response to wait for. If not specified, it
+                   will wait for the first response and will not add it to
+                   the queue.
 
         :return: The response from the daemon.
 
@@ -98,6 +94,8 @@ class Socket:
             response = await self.socket.recv()
             response = json.loads(response)
             return response
+        elif isinstance(id, IDType):
+            id = id.value
 
         # if we already have the response, return it
         for r in self.response_queue:
@@ -232,3 +230,12 @@ class GoXLR(Socket, DaemonCommands, GoXLRCommands, StatusCommands):
             self.select_mixer()  # select the first mixer by default
 
         return connected
+
+    async def receive_patch(self):
+        """
+        Helper method to wait for a patch message from the daemon.
+
+        :return: The patch from the daemon.
+        """
+        response = await self.receive(IDType.Patch)
+        return response.get("data").get("Patch")

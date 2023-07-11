@@ -590,3 +590,8 @@ class DeviceType(Enum):
     Unknown = 1
     Full = 2
     Mini = 3
+
+
+class IDType(Enum):
+    Heartbeat: int = 0
+    Patch: int = 2**64 - 1
