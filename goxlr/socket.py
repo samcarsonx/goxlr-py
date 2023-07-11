@@ -3,7 +3,7 @@ from typing import List
 import websockets
 import json
 
-from .types.models import Mixer, Status, IDType
+from .types.models import Mixer, Patch, Status, IDType
 
 from .commands import DaemonCommands, GoXLRCommands, StatusCommands
 
@@ -125,7 +125,9 @@ class Socket:
         :return: The patch from the daemon.
         """
         response = await self.receive(IDType.Patch)
-        return response.get("data").get("Patch")
+        patches = response.get("data").get("Patch")
+
+        return [Patch(p) for p in patches]
 
     async def open(self):
         """
