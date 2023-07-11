@@ -118,7 +118,7 @@ class Socket:
                     continue
                 self.response_queue.append(response)
 
-    async def receive_patch(self) -> Patch | List[Patch]:
+    async def receive_patch(self) -> List[Patch]:
         """
         Helper method to wait for a patch message from the daemon.
 
@@ -126,9 +126,6 @@ class Socket:
         """
         response = await self.receive(IDType.Patch)
         patches = response.get("data").get("Patch")
-
-        if len(patches) == 1:
-            return Patch(patches[0])
 
         return [Patch(p) for p in patches]
 
@@ -202,7 +199,7 @@ class GoXLR(Socket, DaemonCommands, GoXLRCommands, StatusCommands):
 
         return self.status
 
-    async def receive_patch(self, update: bool = True) -> Patch | List[Patch]:
+    async def receive_patch(self, update: bool = True) -> List[Patch]:
         """
         Helper method to wait for a patch message from the daemon.
 
