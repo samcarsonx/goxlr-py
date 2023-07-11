@@ -7,7 +7,7 @@ sys.path.insert(0, os.path.abspath("."))
 sys.path.insert(0, os.path.abspath(".."))
 
 # Project information
-project = "goxlr"
+project = "goxlr-py"
 author = "Sam Carson"
 # Get year
 copyright = f"{datetime.datetime.now().year}, {author}"

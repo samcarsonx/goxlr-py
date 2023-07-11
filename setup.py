@@ -16,7 +16,7 @@ setup(
     name="goxlr",
     version=verstr,
     description="A Python wrapper for the GoXLR Utility API.",
-    url="https://github.com/samcarsonx/goxlr",
+    url="https://github.com/samcarsonx/goxlr-py",
     author="Sam Carson",
     author_email="sam@samcarson.co.uk",
     license="MIT",
