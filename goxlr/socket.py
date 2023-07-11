@@ -118,7 +118,7 @@ class Socket:
                     continue
                 self.response_queue.append(response)
 
-    async def receive_patch(self):
+    async def receive_patch(self) -> Patch | List[Patch]:
         """
         Helper method to wait for a patch message from the daemon.
 
@@ -126,6 +126,9 @@ class Socket:
         """
         response = await self.receive(IDType.Patch)
         patches = response.get("data").get("Patch")
+
+        if len(patches) == 1:
+            return Patch(patches[0])
 
         return [Patch(p) for p in patches]
 
@@ -198,6 +201,23 @@ class GoXLR(Socket, DaemonCommands, GoXLRCommands, StatusCommands):
             self.mixer = self.select_mixer(self.serial)
 
         return self.status
+
+    async def receive_patch(self, update: bool = True) -> Patch | List[Patch]:
+        """
+        Helper method to wait for a patch message from the daemon.
+
+        :param update: Whether or not to update the status and mixers attributes
+                       after receiving the patch.
+
+        :return: The patch from the daemon.
+        """
+
+        patches = await self.receive_patch()
+
+        if update:
+            await self.update()
+
+        return patches
 
     def select_mixer(self, serial: str = None):
         """
