@@ -1,5 +1,7 @@
 import ctypes
 
+from ..error import MissingFeatureError
+
 from ..types.models import Colours
 from ..types.enums import *
 
@@ -173,6 +175,12 @@ class GoXLRCommands:
 
     # Colour Related Settings
     async def set_animation_mode(self, animation_mode: AnimationMode):
+        if (
+            animation_mode == AnimationMode.Ripple
+            and self.get_device_type() == DeviceType.Mini
+        ):
+            raise MissingFeatureError("Ripple animation is not supported on the Mini")
+
         return await self.__send_command(
             {
                 "SetAnimationMode": "None"
