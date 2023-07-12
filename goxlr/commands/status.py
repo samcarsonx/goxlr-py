@@ -4,9 +4,7 @@ from ..types.models import *
 
 class StatusCommands:
     """
-    Commands related to getting the status of the GoXLR.
-    I decided to split this into its own file because there's
-    already enough code in goxlr.py.
+    Used to retrieve information from the GoXLR Utility daemon.
     """
 
     async def get_status(self) -> Status:

@@ -7,7 +7,9 @@ from ..types.enums import *
 
 
 class GoXLRCommands:
-    # GoXLR commands
+    """
+    GoXLR-specific commands.
+    """
 
     async def __send_command(self, payload, serial=None):
         payload = {"Command": [serial or self.serial, payload]}

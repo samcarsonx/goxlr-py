@@ -2,6 +2,10 @@ from ..types import LogLevel, PathType
 
 
 class DaemonCommands:
+    """
+    Used to send commands to the GoXLR daemon.
+    """
+
     async def __send_daemon(self, payload):
         payload = {"Daemon": payload}
         return await self.send(payload)
