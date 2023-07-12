@@ -30,33 +30,15 @@ Getting Started
 
 Here's some sample code to get started with this package that pings the utility's daemon.
 
-.. code-block:: python
-
-    import asyncio
-
-    from goxlr import GoXLR
-    from goxlr.types import Fader, Channel
-
-    async def main():
-        async with GoXLR() as xlr:
-            await xlr.set_fader(Fader.A, Channel.Headphones)
-            await xlr.set_volume(Channel.Headphones, 127)
-
-    if __name__ == "__main__":
-        asyncio.run(main())
+.. literalinclude:: examples/gettingstarted.py
+   :language: python
+   :linenos:
 
 You may have noticed that we use `with` to manage the connection to the GoXLR. You may also wish to use the more traditional open and close methods which is acceptable too.
 
-.. code-block:: python
-
-    async def main():
-        xlr = GoXLR()
-        await xlr.open()
-
-        ping = await xlr.ping()
-        print(ping)  # Ok
-
-        await xlr.close()
+.. literalinclude:: examples/gettingstarted2.py
+   :language: python
+   :linenos:
 
 For detailed information on the API, refer to the following section:
 
@@ -68,3 +50,4 @@ For detailed information on the API, refer to the following section:
     api/commands
     api/types
     api/error
+    examples/index
