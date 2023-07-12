@@ -1,3 +1,4 @@
+from typing import Union
 from ..error import DaemonError, MixerNotFoundError
 from ..types.models import *
 
@@ -615,6 +616,46 @@ class StatusCommands:
 
     def get_button_down(self, button: Button) -> bool:
         return self.mixer.button_down[button]
+
+    async def wait_for_button(
+        self,
+        buttons: Union[List[Button], Dict[Button, bool]],
+        all: bool = False,
+        invert: bool = False,
+    ) -> None:
+        """
+        Waits for the specified button states to be achieved.
+
+        :param buttons: List of buttons or dictionary specifying the button states to wait for.
+                        - If a list, all buttons are assumed to have the desired state as True (down).
+                        - If a dictionary, Key: Button, Value: Desired button state (True for down, False for up).
+        :param all: Whether to wait for all (instead of any) of the buttons to achieve the desired state.
+        :param invert: Whether to check for the opposite button states.
+        """
+        if isinstance(buttons, dict):
+            button_states = buttons
+        else:
+            button_states = {button: True for button in buttons}
+
+        if invert:
+            button_states = {
+                button: not state for button, state in button_states.items()
+            }
+
+        if all:
+            while not all(
+                self.get_button_down(button) == state
+                for button, state in button_states.items()
+            ):
+                await self.receive_patch()
+        else:
+            while not any(
+                self.get_button_down(button) == state
+                for button, state in button_states.items()
+            ):
+                await self.receive_patch()
+
+        await self.update()  # be sure it's up to date
 
     # Profile name
 
