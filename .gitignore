@@ -2,6 +2,11 @@ scripts/
 /main.py
 /a.py
 
+# Ignore everything in docs/examples directory
+docs/examples/*
+!docs/examples/*.py
+!docs/examples/*.rst
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
