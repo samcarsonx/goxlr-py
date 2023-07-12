@@ -613,8 +613,8 @@ class StatusCommands:
 
     # Button down
 
-    def get_button_down(self) -> Dict[Button, bool]:
-        return self.mixer.button_down
+    def get_button_down(self, button: Button) -> bool:
+        return self.mixer.button_down[button]
 
     # Profile name
 
