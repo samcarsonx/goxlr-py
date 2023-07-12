@@ -620,7 +620,7 @@ class StatusCommands:
     async def wait_for_button(
         self,
         buttons: Union[List[Button], Dict[Button, bool]],
-        all: bool = False,
+        all_values: bool = False,
         invert: bool = False,
     ) -> Dict[Button, bool]:
         """
@@ -642,7 +642,7 @@ class StatusCommands:
                 button: not state for button, state in button_states.items()
             }
 
-        if all:
+        if all_values:
             while not all(
                 self.get_button_down(button) == state
                 for button, state in button_states.items()
