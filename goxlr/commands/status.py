@@ -622,7 +622,7 @@ class StatusCommands:
         buttons: Union[List[Button], Dict[Button, bool]],
         all: bool = False,
         invert: bool = False,
-    ) -> None:
+    ) -> Dict[Button, bool]:
         """
         Waits for the specified button states to be achieved.
 
@@ -656,6 +656,8 @@ class StatusCommands:
                 await self.receive_patch()
 
         await self.update()  # be sure it's up to date
+
+        return {button: self.get_button_down(button) for button in button_states.keys()}
 
     # Profile name
 
