@@ -4,3 +4,7 @@ class DaemonError(Exception):
 
 class MixerNotFoundError(Exception):
     pass
+
+
+class MissingFeatureError(Exception):
+    pass
