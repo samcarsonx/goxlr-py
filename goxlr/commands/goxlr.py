@@ -175,6 +175,14 @@ class GoXLRCommands:
 
     # Colour Related Settings
     async def set_animation_mode(self, animation_mode: AnimationMode):
+        """
+        Set the animation mode of the device.
+
+        :param animation_mode: The animation mode to set.
+        :type animation_mode: AnimationMode
+
+        :raises MissingFeatureError: If the animation mode is not supported on the GoXLR Mini.
+        """
         if (
             animation_mode == AnimationMode.Ripple
             and self.get_device_type() == DeviceType.Mini
