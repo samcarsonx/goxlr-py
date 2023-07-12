@@ -31,7 +31,7 @@ class Socket:
         self.heartbeat_payload = {"id": 0, "data": "Ping"}
         self.response_queue = []
 
-    async def connect(self):
+    async def open(self):
         """
         Connects to the daemon and starts the heartbeat task.
 
@@ -129,14 +129,6 @@ class Socket:
 
         return [Patch(p) for p in patches]
 
-    async def open(self):
-        """
-        Alias for `connect()`.
-
-        :return: True if the connection was successful, False otherwise.
-        """
-        return await self.connect()
-
     async def close(self):
         """
         Closes the connection to the daemon.
@@ -147,8 +139,24 @@ class Socket:
         self.heartbeat_task.cancel()
         return self.socket.closed
 
+    async def connect(self):
+        """
+        Alias for `open()`.
+
+        :return: True if the connection was successful, False otherwise.
+        """
+        return await self.open()
+
+    async def disconnect(self):
+        """
+        Alias for `close()`.
+
+        :return: True if the connection was closed, False otherwise.
+        """
+        return await self.close()
+
     async def __aenter__(self):
-        await self.connect()
+        await self.open()
         return self
 
     async def __aexit__(self, exc_type, exc_value, traceback):
@@ -244,7 +252,7 @@ class GoXLR(Socket, DaemonCommands, GoXLRCommands, StatusCommands):
 
         return self.mixer
 
-    async def connect(self):
+    async def open(self):
         """
         Connects to the GoXLR Utility daemon and gets the latest data.
 
@@ -252,9 +260,17 @@ class GoXLR(Socket, DaemonCommands, GoXLRCommands, StatusCommands):
 
         :raises DaemonError: If no mixers are found.
         """
-        connected = await super().connect()
+        connected = await super().open()
         if connected:
             await self.update()
             self.select_mixer()  # select the first mixer by default
 
         return connected
+
+    async def connect(self):
+        """
+        Alias for `open()`.
+
+        :return: True if the connection was successful, False otherwise.
+        """
+        return await self.open()
