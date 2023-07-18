@@ -108,10 +108,11 @@ class Scribble:
     inverted: bool
 
     def __init__(self, scribble: dict):
-        self.file_name = scribble.get("file_name")
-        self.bottom_text = scribble.get("bottom_text")
-        self.left_text = scribble.get("left_text")
-        self.inverted = scribble.get("inverted")
+        if scribble:  # GoXLR Minis don't have scribbles
+            self.file_name = scribble.get("file_name")
+            self.bottom_text = scribble.get("bottom_text")
+            self.left_text = scribble.get("left_text")
+            self.inverted = scribble.get("inverted")
 
 
 @dataclass
@@ -564,10 +565,11 @@ class Effects:
     current: CurrentEffects
 
     def __init__(self, effects: dict):
-        self.is_enabled = effects.get("is_enabled")
-        self.active_preset = EffectBankPreset[effects.get("active_preset")]
-        self.preset_names = effects.get("preset_names")
-        self.current = CurrentEffects(effects.get("current"))
+        if effects:  # GoXLR Minis don't have effects
+            self.is_enabled = effects.get("is_enabled")
+            self.active_preset = EffectBankPreset[effects.get("active_preset")]
+            self.preset_names = effects.get("preset_names")
+            self.current = CurrentEffects(effects.get("current"))
 
 
 # -------------------------------------------------------
@@ -622,11 +624,12 @@ class Sampler:
     banks: Dict[SampleBank, Dict[SampleButton, SampleMetadata]]
 
     def __init__(self, sampler: dict):
-        self.processing_state = SamplerProcessState(sampler.get("processing_state"))
-        self.active_bank = SampleBank[sampler.get("active_bank")]
-        self.clear_active = sampler.get("clear_active")
-        self.record_buffer = sampler.get("record_buffer")
-        self.banks = sampler.get("banks")
+        if sampler:  # GoXLR Minis don't have a sampler
+            self.processing_state = SamplerProcessState(sampler.get("processing_state"))
+            self.active_bank = SampleBank[sampler.get("active_bank")]
+            self.clear_active = sampler.get("clear_active")
+            self.record_buffer = sampler.get("record_buffer")
+            self.banks = sampler.get("banks")
 
 
 # -------------------------------------------------------
