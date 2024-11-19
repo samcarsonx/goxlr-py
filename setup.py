@@ -21,7 +21,7 @@ setup(
     author_email="sam@samcarson.co.uk",
     license="MIT",
     packages=find_packages(),
-    install_requires=["asyncio", "websockets"],
+    install_requires=["asyncio", "websockets==13.1"],
     python_requires=">=3.10",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
