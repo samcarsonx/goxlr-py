@@ -71,6 +71,7 @@ class OutputDevice(Enum):
     ChatMic = 3
     Sampler = 4
     LineOut = 5
+    StreamMix2 = 6
 
 
 class InputDevice(Enum):
@@ -310,6 +311,7 @@ class MuteFunction(Enum):
     ToVoiceChat = 3
     ToPhones = 4
     ToLineOut = 5
+    ToStreams = 6
 
 
 class MicrophoneType(Enum):
