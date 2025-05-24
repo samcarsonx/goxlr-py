@@ -259,7 +259,7 @@ class Levels:
         self.output_monitor = OutputDevice[levels.get("output_monitor")]
         self.volumes = {Channel[k]: v for k, v in levels.get("volumes").items()}
         if submix := levels.get("submix"):
-            self.submix = {Channel[k]: v for k, v in submix.items()}
+            self.submix = Submixes(submix)
         else:
             self.submix = None
         self.bleep = levels.get("bleep")
